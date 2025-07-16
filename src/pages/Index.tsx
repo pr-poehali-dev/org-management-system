@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
@@ -16,6 +18,46 @@ const Index = () => {
   const [isAddOrgOpen, setIsAddOrgOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isOrgDetailsOpen, setIsOrgDetailsOpen] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [orgFeatures, setOrgFeatures] = useState({
+    cpqBuilder: true,
+    analytics: true,
+    integrations: false,
+    customReports: true,
+    apiAccess: false,
+    advancedSecurity: true,
+    multiLanguage: false,
+    customBranding: false
+  });
+  
+  // Моковые комментарии для демонстрации
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      text: 'Организация активно использует CPQ. Планируют расширение штата.',
+      author: 'Суперадмин',
+      date: '2024-07-15 14:30'
+    },
+    {
+      id: 2,
+      text: 'Запросили подключение API доступа для интеграции с CRM.',
+      author: 'Суперадмин',
+      date: '2024-07-10 09:15'
+    }
+  ]);
+  
+  const addComment = () => {
+    if (newComment.trim()) {
+      const comment = {
+        id: comments.length + 1,
+        text: newComment,
+        author: 'Суперадмин',
+        date: new Date().toLocaleString('ru-RU')
+      };
+      setComments([comment, ...comments]);
+      setNewComment('');
+    }
+  };
 
   // Данные для дашборда
   const stats = [
@@ -438,11 +480,125 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="flex justify-between pt-4">
+              {/* Функциональность */}
+              <div className="border-t pt-4">
+                <Label className="text-sm font-medium text-gray-500">Доступная функциональность</Label>
+                <div className="mt-3 grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="cpqBuilder" 
+                        checked={orgFeatures.cpqBuilder}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, cpqBuilder: !!checked}))}
+                      />
+                      <Label htmlFor="cpqBuilder" className="text-sm">CPQ Конструктор</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="analytics" 
+                        checked={orgFeatures.analytics}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, analytics: !!checked}))}
+                      />
+                      <Label htmlFor="analytics" className="text-sm">Аналитика и отчеты</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="integrations" 
+                        checked={orgFeatures.integrations}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, integrations: !!checked}))}
+                      />
+                      <Label htmlFor="integrations" className="text-sm">Интеграции с CRM</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="customReports" 
+                        checked={orgFeatures.customReports}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, customReports: !!checked}))}
+                      />
+                      <Label htmlFor="customReports" className="text-sm">Кастомные отчеты</Label>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="apiAccess" 
+                        checked={orgFeatures.apiAccess}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, apiAccess: !!checked}))}
+                      />
+                      <Label htmlFor="apiAccess" className="text-sm">API доступ</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="advancedSecurity" 
+                        checked={orgFeatures.advancedSecurity}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, advancedSecurity: !!checked}))}
+                      />
+                      <Label htmlFor="advancedSecurity" className="text-sm">Расширенная безопасность</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="multiLanguage" 
+                        checked={orgFeatures.multiLanguage}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, multiLanguage: !!checked}))}
+                      />
+                      <Label htmlFor="multiLanguage" className="text-sm">Мультиязычность</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="customBranding" 
+                        checked={orgFeatures.customBranding}
+                        onCheckedChange={(checked) => setOrgFeatures(prev => ({...prev, customBranding: !!checked}))}
+                      />
+                      <Label htmlFor="customBranding" className="text-sm">Кастомный брендинг</Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Комментарии */}
+              <div className="border-t pt-4">
+                <Label className="text-sm font-medium text-gray-500">Комментарии администратора</Label>
+                
+                {/* Добавление нового комментария */}
+                <div className="mt-3 space-y-3">
+                  <div className="flex space-x-2">
+                    <Textarea 
+                      placeholder="Добавить комментарий..."
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="flex-1 min-h-[80px]"
+                    />
+                    <Button onClick={addComment} disabled={!newComment.trim()}>
+                      <Icon name="Send" size={16} className="mr-2" />
+                      Добавить
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Список комментариев */}
+                <div className="mt-4 space-y-3 max-h-[200px] overflow-y-auto">
+                  {comments.map((comment) => (
+                    <Card key={comment.id} className="p-3 bg-gray-50">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-sm font-medium text-gray-700">{comment.author}</span>
+                        <span className="text-xs text-gray-500">{comment.date}</span>
+                      </div>
+                      <p className="text-sm text-gray-900">{comment.text}</p>
+                    </Card>
+                  ))}
+                  {comments.length === 0 && (
+                    <p className="text-sm text-gray-500 italic text-center py-4">
+                      Комментариев пока нет
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex justify-between pt-4 border-t">
                 <div className="space-x-2">
                   <Button variant="outline">
-                    <Icon name="Edit" size={16} className="mr-2" />
-                    Редактировать
+                    <Icon name="Save" size={16} className="mr-2" />
+                    Сохранить изменения
                   </Button>
                   <Button variant="outline">
                     <Icon name="Mail" size={16} className="mr-2" />
